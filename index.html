@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en" id="top">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sri Jambukeswara Swamy Sivalayam</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Leaflet Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+
+<body>
+  <div class="bg-orbs" aria-hidden="true"></div>
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <div class="topbar-left">
+        <span class="status-dot"></span>
+
+        <!-- Moving Ticker -->
+        <div class="ticker" aria-label="Temple updates">
+          <div class="ticker-track" id="tickerTrack">
+            <div class="ticker-item" id="tickerTiming">Today Timings: Loading...</div>
+            <div class="ticker-sep">•</div>
+            <div class="ticker-item" id="tickerPoojas">Today Poojas: Loading...</div>
+            <div class="ticker-sep">•</div>
+            <div class="ticker-item" id="tickerFestival">Upcoming Festival: Loading...</div>
+
+            <!-- duplicate for seamless loop -->
+            <div class="ticker-sep">•</div>
+            <div class="ticker-item" id="tickerTiming2">Today Timings: Loading...</div>
+            <div class="ticker-sep">•</div>
+            <div class="ticker-item" id="tickerPoojas2">Today Poojas: Loading...</div>
+            <div class="ticker-sep">•</div>
+            <div class="ticker-item" id="tickerFestival2">Upcoming Festival: Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <select id="langSelect" class="btn btn-ghost" aria-label="Select language">
+          <option value="en">English</option>
+          <option value="te">తెలుగు</option>
+          <option value="hi">हिन्दी</option>
+          <option value="ta">தமிழ்</option>
+        </select>
+
+        <a class="btn btn-outline" href="#donate" data-i18n="ctaDonate">Donate</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="siteHeader">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="Go to top">
+        <div class="logo" aria-hidden="true">ॐ</div>
+        <div>
+          <div class="brand-kicker" data-i18n="brandKicker">Shiva Temple</div>
+          <h1 id="templeName">Sri Jambukeswara Swamy Sivalayam</h1>
+          <p id="templePlace" class="muted">Mangalam Village, Tirupati District</p>
+        </div>
+      </a>
+
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="#about" data-i18n="navAbout">About</a>
+        <a href="#timings" data-i18n="navTimings">Timings</a>
+        <a href="#poojas" data-i18n="navPoojas">Poojas</a>
+        <a href="#events" data-i18n="navEvents">Festivals</a>
+        <a href="#gallery" data-i18n="navGallery">Gallery</a>
+        <a href="#location" data-i18n="navLocation">Location</a>
+        <a href="#contact" data-i18n="navContact">Contact</a>
+      </nav>
+
+      <button id="menuBtn" class="btn btn-primary menu-btn" type="button"
+              aria-expanded="false" aria-controls="mobileNav">
+        ☰ <span data-i18n="menuText">Menu</span>
+      </button>
+    </div>
+
+    <!-- Mobile nav -->
+    <div id="mobileNav" class="mobile-nav container" hidden>
+      <a href="#about" data-i18n="navAbout">About</a>
+      <a href="#timings" data-i18n="navTimings">Timings</a>
+      <a href="#poojas" data-i18n="navPoojas">Poojas</a>
+      <a href="#events" data-i18n="navEvents">Festivals</a>
+      <a href="#gallery" data-i18n="navGallery">Gallery</a>
+      <a href="#location" data-i18n="navLocation">Location</a>
+      <a href="#contact" data-i18n="navContact">Contact</a>
+      <a class="btn btn-outline w-full" href="#donate" data-i18n="ctaDonate">Donate</a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+
+    <div class="container hero-grid">
+      <div class="hero-left reveal">
+        <div class="pill">
+          <span class="pill-dot"></span>
+          <span data-i18n="pillLine">Shiva Temple • Village Committee</span>
+        </div>
+
+        <h2 class="hero-title" data-i18n="heroTitle">Om Namah Shivaya</h2>
+        <p class="hero-subtitle muted" data-i18n="heroSubtitle">
+          A peaceful Shiva temple in our village — daily darshan, poojas, and festivals for all devotees.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#timings" data-i18n="ctaTimings">View Timings</a>
+          <a class="btn btn-outline" href="#location" data-i18n="ctaDirections">Get Directions</a>
+        </div>
+
+        <div class="hero-cards">
+          <div class="card card-glow reveal">
+            <div class="card-top">
+              <div class="card-title" data-i18n="todayBoxTitle">Today’s Timings</div>
+              <div class="badge" data-i18n="badgeOpen">Open</div>
+            </div>
+            <div class="card-big" id="todayTiming">Loading...</div>
+            <div class="muted small" data-i18n="todayNote">Updated automatically based on day.</div>
+          </div>
+
+          <div class="card reveal">
+            <div class="card-top">
+              <div class="card-title" data-i18n="countdownTitle">Festival Countdown</div>
+              <div class="badge badge-gold" data-i18n="badgeFestival">Festival</div>
+            </div>
+            <div class="card-big" id="countdown">Loading...</div>
+            <div class="muted small" id="festivalNameLine">Next festival: Maha Shivaratri</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right reveal">
+        <div class="hero-media card">
+          <div class="hero-media-inner">
+            <div class="hero-slider" aria-label="Temple photos">
+              <figure class="hero-slide">
+                <img src="assets/temple_photos/main/main_image.JPG" alt="Temple photo 1" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/temple_photos/main/main_image_2.JPG" alt="Temple photo 2" loading="lazy" />
+              </figure>
+              <figure class="hero-slide">
+                <img src="assets/temple_photos/main/main_image_3.JPG" alt="Temple photo 3" loading="lazy" />
+              </figure>
+            </div>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat">
+              <div class="stat-num">1,000+</div>
+              <div class="stat-label muted" data-i18n="statDevotees">Devotees</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">ॐ</div>
+              <div class="stat-label muted" data-i18n="statBless">Blessings</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="notice reveal">
+          <div class="notice-title" data-i18n="noticeTitle">Important</div>
+          <div class="muted small" data-i18n="noticeText">
+            For special pooja booking, please contact the committee members.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-ornament" aria-hidden="true">
+      <span></span><i>ॐ</i><span></span>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about" class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 data-i18n="aboutTitle">About the Temple</h2>
+        <p class="muted" data-i18n="aboutDesc">
+          This temple is dedicated to Lord Shiva (Mahadev). It is maintained by the village committee and devotees.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card reveal">
+          <h3 data-i18n="historyTitle">History</h3>
+          <p data-i18n="historyText">
+            Our temple stands as a sacred center of peace, devotion, and unity. Generations of devotees have prayed here with faith, and the temple continues to inspire spiritual strength, harmony, and service in the village.
+          </p>
+        </div>
+
+        <div class="card reveal">
+          <h3 data-i18n="featuresTitle">Special Features</h3>
+          <ul class="nice-list">
+            <li data-i18n="feat1">Peaceful temple premises</li>
+            <li data-i18n="feat2">Daily Abhishekam and Aarti</li>
+            <li data-i18n="feat3">Annual festivals and community gatherings</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timings -->
+  <section id="timings" class="section section-alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 data-i18n="timingsTitle">Darshan Timings</h2>
+      </div>
+
+      <div class="card table-card reveal">
+        <table class="table">
+          <thead>
+            <tr>
+              <th data-i18n="thDay">Day</th>
+              <th data-i18n="thMorning">Open</th>
+              <th data-i18n="thEvening">Close</th>
+            </tr>
+          </thead>
+          <tbody id="timingsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Poojas -->
+  <section id="poojas" class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 data-i18n="poojaTitle">Special Poojas</h2>
+        <p class="muted" data-i18n="poojaDesc">Weekly and monthly poojas information.</p>
+      </div>
+
+      <div class="cards-3">
+        <div class="card reveal">
+          <div class="mini-icon">🥛</div>
+          <h3 data-i18n="pooja1Title">Monday: Shiva Abhishekam</h3>
+          <p data-i18n="pooja1Text">Every Monday Rudrabhishekam starts at 6:30 AM, followed by Shiva Abhishekam and Aarti.</p>
+        </div>
+        <div class="card reveal">
+          <div class="mini-icon">🪔</div>
+          <h3 data-i18n="pooja2Title">Pradosham</h3>
+          <p data-i18n="pooja2Text">Special pooja on Pradosham days with devotional bhajans.</p>
+        </div>
+        <div class="card reveal">
+          <div class="mini-icon">📿</div>
+          <h3 data-i18n="pooja3Title">Monthly Rudrabhishekam</h3>
+          <p data-i18n="pooja3Text">Rudram chanting and abhishekam once a month (date announced).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mahashivratri -->
+  <section id="mahashivratri" class="section section-alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 data-i18n="msTitle">Maha Shivaratri 2026</h2>
+        <p class="muted" data-i18n="msDesc">Sunday, February 15, 2026 - Main program begins at 9:30 AM.</p>
+      </div>
+
+      <div class="ms-grid">
+        <figure class="card reveal ms-card">
+          <img class="ms-poster" src="assets/WhatsApp Image 2026-02-07 at 11.11.11 AM (1).jpeg" alt="Maha Shivaratri 2026 Kalyanotsavam poster" data-i18n-alt="msPoster1Alt" loading="lazy" />
+          <figcaption class="muted small" data-i18n="msPoster1">Sivaparvathi Kalyanotsavam poster.</figcaption>
+        </figure>
+
+        <figure class="card reveal ms-card">
+          <img class="ms-poster" src="assets/WhatsApp Image 2026-02-07 at 11.11.11 AM.jpeg" alt="Maha Shivaratri 2026 program poster" data-i18n-alt="msPoster2Alt" loading="lazy" />
+          <figcaption class="muted small" data-i18n="msPoster2">Maha Shivaratri program schedule poster.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- Events -->
+  <section id="events" class="section section-alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 data-i18n="eventsTitle">Festivals & Events</h2>
+        <p class="muted" data-i18n="eventsDesc">Upcoming and annual celebrations.</p>
+      </div>
+
+      <div class="cards-3">
+        <div class="card reveal">
+          <div class="tag" data-i18n="tagMajor">Major</div>
+          <h3 data-i18n="event1Title">Maha Shivaratri</h3>
+          <p data-i18n="event1Text">Night-long bhajans, abhishekam, and special darshan.</p>
+        </div>
+        <div class="card reveal">
+          <div class="tag tag-gold" data-i18n="tagSeasonal">Seasonal</div>
+          <h3 data-i18n="event2Title">Karthika Masam</h3>
+          <p data-i18n="event2Text">Deepam, special poojas, and devotional programs.</p>
+        </div>
+        <div class="card reveal">
+          <div class="tag tag-green" data-i18n="tagCommunity">Community</div>
+          <h3 data-i18n="event3Title">Temple Anniversary</h3>
+          <p data-i18n="event3Text">Annadanam and cultural programs.</p>
+        </div>
+      </div>
+
+      <div class="card reveal" style="margin-top:14px;">
+        <h3 data-i18n="masikTitle">All Masik Shivaratri Dates in 2026</h3>
+        <p class="muted small" data-i18n="masikPlan">Plan your year:</p>
+        <ul class="nice-list">
+          <li data-i18n="masikDate1">February 15 (Sunday)</li>
+          <li data-i18n="masikDate2">March 17 (Tuesday)</li>
+          <li data-i18n="masikDate3">April 15 (Wednesday)</li>
+          <li data-i18n="masikDate4">May 15 (Friday)</li>
+          <li data-i18n="masikDate5">June 13 (Saturday)</li>
+          <li data-i18n="masikDate6">July 12 (Sunday)</li>
+          <li data-i18n="masikDate7">August 11 (Tuesday)</li>
+          <li data-i18n="masikDate8">September 9 (Wednesday)</li>
+          <li data-i18n="masikDate9">October 8 (Thursday)</li>
+          <li data-i18n="masikDate10">November 7 (Saturday)</li>
+          <li data-i18n="masikDate11">December 7 (Monday)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery + Videos -->
+  <section id="gallery" class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 data-i18n="galleryTitle">Photo Gallery</h2>
+        <p class="muted" data-i18n="galleryDesc">Click a photo to enlarge.</p>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="filters reveal" id="galleryFilters">
+        <button class="filter-btn active" data-filter="all" data-i18n="filterAll">All</button>
+        <button class="filter-btn" data-filter="daily" data-i18n="filterDaily">Daily Pooja</button>
+        <button class="filter-btn" data-filter="festival" data-i18n="filterFestivals">Festivals</button>
+        <button class="filter-btn" data-filter="annadanam" data-i18n="filterAnnadanam">Annadanam</button>
+        <button class="filter-btn" data-filter="temple" data-i18n="filterTemple">Temple</button>
+      </div>
+
+      <!-- Gallery Grid -->
+      <div class="gallery gallery-scroll reveal" id="galleryGrid">
+        <div class="g-item" data-tags="temple,daily" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.44.41 PM.jpeg">
+          <img alt="Temple photo 1" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.44.41 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterDaily">Daily Pooja</div>
+        </div>
+        <div class="g-item" data-tags="temple,festival" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.44.45 PM.jpeg">
+          <img alt="Temple photo 2" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.44.45 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterFestivals">Festivals</div>
+        </div>
+        <div class="g-item" data-tags="temple,annadanam" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.44.47 PM.jpeg">
+          <img alt="Temple photo 3" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.44.47 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterAnnadanam">Annadanam</div>
+        </div>
+        <div class="g-item" data-tags="temple" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.44.50 PM.jpeg">
+          <img alt="Temple photo 4" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.44.50 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterTemple">Temple</div>
+        </div>
+        <div class="g-item" data-tags="temple,daily" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.44.52 PM.jpeg">
+          <img alt="Temple photo 5" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.44.52 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterDaily">Daily Pooja</div>
+        </div>
+        <div class="g-item" data-tags="temple,festival" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.44.54 PM.jpeg">
+          <img alt="Temple photo 6" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.44.54 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterFestivals">Festivals</div>
+        </div>
+        <div class="g-item" data-tags="temple,annadanam" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.45.02 PM.jpeg">
+          <img alt="Temple photo 7" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.45.02 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterAnnadanam">Annadanam</div>
+        </div>
+        <div class="g-item" data-tags="temple" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.45.21 PM.jpeg">
+          <img alt="Temple photo 8" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.45.21 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterTemple">Temple</div>
+        </div>
+        <div class="g-item" data-tags="temple,daily" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.45.23 PM (1).jpeg">
+          <img alt="Temple photo 9" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.45.23 PM (1).jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterDaily">Daily Pooja</div>
+        </div>
+        <div class="g-item" data-tags="temple,festival" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.45.23 PM.jpeg">
+          <img alt="Temple photo 10" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.45.23 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterFestivals">Festivals</div>
+        </div>
+        <div class="g-item" data-tags="temple,annadanam" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.48.44 PM.jpeg">
+          <img alt="Temple photo 11" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.48.44 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterAnnadanam">Annadanam</div>
+        </div>
+        <div class="g-item" data-tags="temple" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.48.50 PM.jpeg">
+          <img alt="Temple photo 12" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.48.50 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterTemple">Temple</div>
+        </div>
+        <div class="g-item" data-tags="temple,daily" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.48.51 PM.jpeg">
+          <img alt="Temple photo 13" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.48.51 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterDaily">Daily Pooja</div>
+        </div>
+        <div class="g-item" data-tags="temple,festival" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.48.54 PM.jpeg">
+          <img alt="Temple photo 14" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.48.54 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterFestivals">Festivals</div>
+        </div>
+        <div class="g-item" data-tags="temple,annadanam" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.03 PM.jpeg">
+          <img alt="Temple photo 15" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.03 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterAnnadanam">Annadanam</div>
+        </div>
+        <div class="g-item" data-tags="temple" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.04 PM.jpeg">
+          <img alt="Temple photo 16" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.04 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterTemple">Temple</div>
+        </div>
+        <div class="g-item" data-tags="temple,daily" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.06 PM.jpeg">
+          <img alt="Temple photo 17" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.06 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterDaily">Daily Pooja</div>
+        </div>
+        <div class="g-item" data-tags="temple,festival" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.08 PM.jpeg">
+          <img alt="Temple photo 18" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.08 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterFestivals">Festivals</div>
+        </div>
+        <div class="g-item" data-tags="temple,annadanam" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.11 PM (1).jpeg">
+          <img alt="Temple photo 19" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.11 PM (1).jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterAnnadanam">Annadanam</div>
+        </div>
+        <div class="g-item" data-tags="temple" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.11 PM.jpeg">
+          <img alt="Temple photo 20" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.11 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterTemple">Temple</div>
+        </div>
+        <div class="g-item" data-tags="temple,daily" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.12 PM.jpeg">
+          <img alt="Temple photo 21" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.12 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterDaily">Daily Pooja</div>
+        </div>
+        <div class="g-item" data-tags="temple,festival" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.13 PM (1).jpeg">
+          <img alt="Temple photo 22" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.13 PM (1).jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterFestivals">Festivals</div>
+        </div>
+        <div class="g-item" data-tags="temple,annadanam" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.13 PM.jpeg">
+          <img alt="Temple photo 23" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.13 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterAnnadanam">Annadanam</div>
+        </div>
+        <div class="g-item" data-tags="temple" data-src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.14 PM.jpeg">
+          <img alt="Temple photo 24" src="assets/temple_photos/WhatsApp Image 2026-02-07 at 3.49.14 PM.jpeg" loading="lazy" />
+          <div class="g-badge" data-i18n="filterTemple">Temple</div>
+        </div>
+      </div>
+
+      <!-- YouTube Videos -->
+      <div class="section-head reveal" style="margin-top:34px;">
+        <h2 data-i18n="videoTitle">YouTube Videos</h2>
+        <p class="muted" data-i18n="videoDesc">Temple videos, poojas and festivals</p>
+      </div>
+
+      <div class="video-actions reveal">
+        <a class="btn btn-primary" href="https://youtube.com/@srijambukeshwaraswamitemp1760?si=Zf2OYZPIUTa6wOdf" target="_blank" rel="noopener" data-i18n="ytChannel">YouTube Channel</a>
+        <a class="btn btn-outline" href="https://youtube.com/@srijambukeshwaraswamitemp1760/shorts" target="_blank" rel="noopener" data-i18n="ytShorts">Watch Shorts</a>
+      </div>
+
+      <div class="filters reveal" id="videoFilters">
+        <button class="filter-btn active" data-filter="all" data-i18n="filterAll">All</button>
+        <button class="filter-btn" data-filter="daily" data-i18n="filterDaily">Daily Pooja</button>
+        <button class="filter-btn" data-filter="festival" data-i18n="filterFestivals">Festivals</button>
+        <button class="filter-btn" data-filter="temple" data-i18n="filterTemple">Temple</button>
+      </div>
+
+      <div class="video-grid video-grid-scroll reveal" id="videoGrid">
+        <div class="v-item" data-tags="daily">
+          <div class="video-thumb">
+            <img src="https://i.ytimg.com/vi/c5i3TW5K-so/hqdefault.jpg" alt="Temple Short 1 thumbnail" loading="lazy" />
+            <a class="video-link" href="https://www.youtube.com/shorts/c5i3TW5K-so" target="_blank" rel="noopener">Watch on YouTube</a>
+          </div>
+          <div class="v-meta">
+            <div class="v-title">Temple Short 1</div>
+            <div class="muted small">Daily Pooja</div>
+          </div>
+        </div>
+
+        <div class="v-item" data-tags="festival">
+          <div class="video-thumb">
+            <img src="https://i.ytimg.com/vi/U5oRelvuRu0/hqdefault.jpg" alt="Temple Short 2 thumbnail" loading="lazy" />
+            <a class="video-link" href="https://www.youtube.com/shorts/U5oRelvuRu0" target="_blank" rel="noopener">Watch on YouTube</a>
+          </div>
+          <div class="v-meta">
+            <div class="v-title">Temple Short 2</div>
+            <div class="muted small">Festivals</div>
+          </div>
+        </div>
+
+        <div class="v-item" data-tags="temple">
+          <div class="video-thumb">
+            <img src="https://i.ytimg.com/vi/S4iQIfHZCAY/hqdefault.jpg" alt="Temple Short 3 thumbnail" loading="lazy" />
+            <a class="video-link" href="https://www.youtube.com/shorts/S4iQIfHZCAY" target="_blank" rel="noopener">Watch on YouTube</a>
+          </div>
+          <div class="v-meta">
+            <div class="v-title">Temple Short 3</div>
+            <div class="muted small">Temple</div>
+          </div>
+        </div>
+
+        <div class="v-item" data-tags="daily">
+          <div class="video-thumb">
+            <img src="https://i.ytimg.com/vi/pLRhZlUrgVQ/hqdefault.jpg" alt="Temple Short 4 thumbnail" loading="lazy" />
+            <a class="video-link" href="https://www.youtube.com/shorts/pLRhZlUrgVQ" target="_blank" rel="noopener">Watch on YouTube</a>
+          </div>
+          <div class="v-meta">
+            <div class="v-title">Temple Short 4</div>
+            <div class="muted small">Daily Pooja</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Donate -->
+  <section id="donate" class="section section-alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 data-i18n="donateTitle">Donations</h2>
+        <p class="muted" data-i18n="donateDesc">Support temple maintenance and annadanam.</p>
+      </div>
+
+      <div class="card reveal">
+        <p class="muted" data-i18n="donateContact">Please connect Alaya Committee for donations.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Location -->
+  <section id="location" class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 data-i18n="locationTitle">Location</h2>
+        <p class="muted" data-i18n="locationDesc">Find the temple on the map</p>
+      </div>
+
+      <div class="card map-card reveal">
+        <div id="templeMap"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="section section-alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2 data-i18n="contactTitle">Contact</h2>
+        <p class="muted" data-i18n="contactDesc">For pooja booking and events.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card reveal">
+          <h3 data-i18n="contactInfoTitle">Contact Info</h3>
+          <p><b data-i18n="phoneLabel">Phone:</b> +91 9000919277</p>
+          <div class="card-divider"></div>
+          <a class="btn btn-primary w-full" id="directionsBtn" href="#" target="_blank" rel="noopener">
+            🛕 <span data-i18n="ctaDirections">Get Directions</span>
+          </a>
+        </div>
+
+        <div class="card reveal">
+          <h3 data-i18n="committeeTitle">Alaya Committee</h3>
+          <ul class="nice-list">
+            <li data-i18n="committee1">Mangalam Gramam</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="muted small">© <span id="year"></span> <span id="footerTempleName">Sri Jambukeswara Swamy Sivalayam</span></div>
+      <a class="btn btn-ghost" href="#top" data-i18n="toTop">↑ Top</a>
+    </div>
+  </footer>
+
+  <!-- Gallery Modal -->
+  <div id="modal" class="modal" aria-hidden="true">
+    <button class="modal-close" id="modalClose" type="button" aria-label="Close">✕</button>
+    <img id="modalImg" alt="Enlarged gallery" />
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
